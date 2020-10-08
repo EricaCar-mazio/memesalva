@@ -1,12 +1,35 @@
+<?php
+  //header('Content-Type: text/html; charset=utf-8');
+  $idConexao = mysqli_connect('localhost', 'root', 'root') or die('Falha na conex�o.');
+
+  if($idConexao)
+  {
+     mysqli_select_db($idConexao,'memesalva') or die('Falha na sele��o do banco.');
+
+   //   $Comando = 'SELECT P.id, P.descricao, P.imagem, U.nome FROM post P, usuario U where P.autor = U.id ORDER BY P.id';
+     $categoria = 'substantivos';
+     $Comando = "SELECT p.*, u.nome AS autor FROM post_categoria pc "
+                ."JOIN post p ON pc.post_id = p.id "
+                ."JOIN categoria c ON pc.categoria_id = c.id "
+                ."JOIN usuario u ON p.autor = u.id "
+                ."WHERE c.nome = '" . $categoria. "' ";
+
+     $Resultado = mysqli_query($idConexao,$Comando) or die('Comando SQL n�o executado.');
+
+     mysqli_close($idConexao) or die('Falha no fechamento da conex�o.');      
+  }
+  else
+  { Echo 'Erro na conex�o com o servidor do banco.';
+  }
+?>
 <!DOCTYPE HTML>
 <html lang="pt-br">
    <head>
-      <title>MEMESALVA</title>
+      <title>SUBSTANTIVOS</title>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
       <link rel="stylesheet" href="assets/css/main.css" />
       <noscript>
-         <link rel="shortcut icon" href="/images/logo-branca-logo.png">
          <link rel="stylesheet" href="assets/css/noscript.css" />
       </noscript>
    </head>
@@ -27,52 +50,22 @@
          </header>
          <!-- Main -->
          <div id="main">
-            
+            <header class="major">
+                <h2>SUBSTANTIVOS</h2>
+             </header>
             <!-- Posts -->
             <section class="posts">
 
-               <article>
-                  <a href="adjetivos.html" class="image fit"><img src="images/adjet.jpeg" alt="" width="445" height="320"></a>
-                  <ul class="actions special">
-                     <li><a href="adjetivos.html" class="button">ADJETIVOS</a></li>
-                  </ul>
-               </article>
-
-               <article>
-                  <a href="erros.html" class="image fit"><img src="images/erros.jpeg" alt="" width="445" height="320"></a>
-                  <ul class="actions special">
-                     <li><a href="erros.html" class="button">ERROS ORTOGRÁFICOS</a></li>
-                  </ul>
-               </article>
-
-               <article>
-                  <a href="#" class="image fit"><img src="images/subst.jpeg" alt="" width="445" height="320"></a>
-                  <ul class="actions special">
-                     <li><a href="substantivos.html" class="button">SUBSTANTIVOS</a></li>
-                  </ul>
-               </article>
-
-               <article>
-                  <a href="#" class="image fit"><img src="images/verbos.jpeg" alt="" width="445" height="320"></a>
-                  <ul class="actions special">
-                     <li><a href="verbos.html" class="button">VERBOS</a></li>
-                  </ul>
-               </article>
-
-               <article>
-                <a href="outros.html" class="image fit"><img src="images/outros.jpeg" alt="" width="445" height="320"></a>
-                <ul class="actions special">
-                   <li><a href="outros.html" class="button">OUTROS SITES</a></li>
-                </ul>
-             </article>
-
-             <article>
-                <a href="quem_somos.html" class="image fit"><img src="images/qs.jpeg" alt="" width="445" height="320"></a>
-                <ul class="actions special">
-                   <li><a href="quem_somos.html" class="button">QUEM SOMOS</a></li>
-                </ul>
-             </article>
-
+            <?php while ( $Registro = mysqli_fetch_array($Resultado)) { ?>
+                  <article>
+                     <a href="#" class="image fit">
+                        <img src="<?php echo $Registro['imagem'] ?>" alt="" height="455" width="320">
+                     </a>
+                     <p><?php echo $Registro['descricao'] ?></p>
+                     <p>Autor: <?php echo $Registro['autor'] ?></p>
+                     <ul class="actions special"></ul>
+                  </article>
+               <?php }?>
             </section>
          </div>
          <!-- Copyright -->
